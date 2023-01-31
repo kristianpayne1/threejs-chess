@@ -1,6 +1,10 @@
-import { OrbitControls, Stage } from "@react-three/drei/core";
+import {
+  GizmoHelper,
+  GizmoViewport,
+  OrbitControls,
+  Stage,
+} from "@react-three/drei/core";
 import { Canvas } from "@react-three/fiber";
-// import { useState } from "react";
 import Chessboard from "./Chessboard";
 
 const App = () => {
@@ -15,6 +19,9 @@ const App = () => {
       >
         <Chessboard />
       </Stage>
+      <GizmoHelper alignment="top-right" margin={[100, 100]}>
+        <GizmoViewport labelColor="white" axisHeadScale={1} />
+      </GizmoHelper>
       <OrbitControls
         makeDefault
         minPolarAngle={0}

@@ -1,33 +1,54 @@
+import { Loader } from "@react-three/drei";
 import {
   GizmoHelper,
   GizmoViewport,
   OrbitControls,
+  OrthographicCamera,
   Stage,
 } from "@react-three/drei/core";
 import { Canvas } from "@react-three/fiber";
+import { Suspense } from "react";
 import Chessboard from "./Chessboard";
+// import Loader from "./Loader";
+import Piece from "./Piece";
+import { calculatePiecePositions } from "./utils";
+
+const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 const App = () => {
+  const piecePositionsMap = calculatePiecePositions(FEN);
   return (
-    <Canvas shadows camera={{ position: [0, 0.5, 0], fov: 35 }} dpr={[1, 2]}>
-      <Stage
-        intensity={0.4}
-        preset="rembrandt"
-        shadows="accumulative"
-        adjustCamera={1.75}
-        environment="city"
-      >
-        <Chessboard />
-      </Stage>
-      <GizmoHelper alignment="top-right" margin={[100, 100]}>
-        <GizmoViewport labelColor="white" axisHeadScale={1} />
-      </GizmoHelper>
-      <OrbitControls
-        makeDefault
-        minPolarAngle={0}
-        maxPolarAngle={Math.PI / 1.75}
-      />
-    </Canvas>
+    <>
+      <Canvas shadows dpr={[1, 2]}>
+        <Suspense fallback={null}>
+          <Stage
+            intensity={0.4}
+            shadows="accumulative"
+            environment="city"
+            adjustCamera={1.1}
+          >
+            {piecePositionsMap.map(([piece, ...position], index) => (
+              <Piece
+                key={`${piece}-${index}`}
+                piece={piece}
+                position={position}
+              />
+            ))}
+            <Chessboard />
+          </Stage>
+          <GizmoHelper alignment="top-right" margin={[100, 100]}>
+            <GizmoViewport labelColor="white" axisHeadScale={1} />
+          </GizmoHelper>
+        </Suspense>
+        <OrthographicCamera makeDefault position={[0, 10, 0]} />
+        <OrbitControls
+          makeDefault
+          minPolarAngle={0}
+          maxPolarAngle={Math.PI / 1.75}
+        />
+      </Canvas>
+      <Loader containerStyles={{ background: "#004474" }} />
+    </>
   );
 };
 

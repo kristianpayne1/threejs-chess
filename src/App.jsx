@@ -12,7 +12,6 @@ import Chessboard from "./Chessboard";
 // import Loader from "./Loader";
 import Piece from "./Piece";
 import { calculatePiecePositions } from "./utils";
-import { EffectComposer, Outline } from "@react-three/postprocessing";
 
 const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -47,14 +46,6 @@ const App = () => {
           minPolarAngle={0}
           maxPolarAngle={Math.PI / 1.75}
         />
-        {/* <EffectComposer multisampling={0} disableNormalPass={true}>
-          <Outline
-            blur
-            visibleEdgeColor="white"
-            edgeStrength={100}
-            width={500}
-          />
-        </EffectComposer> */}
       </Canvas>
       <Loader containerStyles={{ background: "#004474" }} />
     </>

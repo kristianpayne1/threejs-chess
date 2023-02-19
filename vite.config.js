@@ -8,7 +8,8 @@ export default defineConfig({
   root: "./",
   build: {
     chunkSizeWarningLimit: 3000,
-    outDir: "dist",
+    emptyOutDir: true,
+    sourcemap: true,
   },
-  publicDir: "assets",
+  assetsInclude: ["**/*.glb"],
 });

@@ -1,22 +1,29 @@
-import { Loader } from "@react-three/drei";
 import {
   GizmoHelper,
   GizmoViewport,
   OrbitControls,
   OrthographicCamera,
   Stage,
-} from "@react-three/drei/core";
+  Loader,
+} from "@react-three/drei/";
 import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Chessboard from "./Chessboard";
 // import Loader from "./Loader";
 import Piece from "./Piece";
 import { calculatePiecePositions } from "./utils";
+import { Chess } from "chess.js";
 
-const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+// const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 const App = () => {
-  const piecePositionsMap = calculatePiecePositions(FEN);
+  const [turn, setTurn] = useState("w");
+  const [selectedPiece, setSelectedPiece] = useState("");
+  const chess = new Chess();
+  let piecePositionsMap = calculatePiecePositions(chess.fen());
+
+  console.log(chess.moves({ square: selectedPiece }));
+
   return (
     <>
       <Canvas shadows dpr={[1, 2]}>
@@ -27,11 +34,14 @@ const App = () => {
             environment="city"
             adjustCamera={1.1}
           >
-            {piecePositionsMap.map(([piece, ...position], index) => (
+            {piecePositionsMap.map(([piece, char, ...position], index) => (
               <Piece
                 key={`${piece}-${index}`}
+                char={char}
                 piece={piece}
                 position={position}
+                turn={turn}
+                setSelectedPiece={setSelectedPiece}
               />
             ))}
             <Chessboard />

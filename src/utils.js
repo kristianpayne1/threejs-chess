@@ -6,12 +6,12 @@ export const calculatePiecePositions = (FEN) => {
   fenPositions.forEach((chars) => {
     row += 2;
     let column = -9;
-    chars.split("").forEach((char) => {
-      const parsedInt = parseInt(char);
-      // is piece char
+    chars.split("").forEach((type) => {
+      const parsedInt = parseInt(type);
+      // is piece type
       if (isNaN(parsedInt)) {
         column += 2;
-        positions.push([char, column, 0.4, row]);
+        positions.push([type, positionToChar(column, row), column, 0.4, row]);
       } else {
         column += parsedInt * 2;
       }
@@ -40,3 +40,10 @@ export const getType = (char) => {
       return null;
   }
 };
+
+export const positionToChar = (column, row) =>
+  String.fromCharCode(97 + (column + 8) / 2) + (-row + 9) / 2;
+export const charToPosition = (char) => [
+  2 * (char.charCodeAt(0) - 97) - 7,
+  -(2 * char[1] - 9),
+];

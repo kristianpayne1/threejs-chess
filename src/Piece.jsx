@@ -23,7 +23,7 @@ const Piece = ({
     else document.body.style.cursor = "default";
   }, [hovered]);
 
-  const onSelect = () =>
+  const onSelect = char =>
     turn === "w" && color !== "black" && setSelectedPiece(char);
 
   return (
@@ -33,7 +33,8 @@ const Piece = ({
         scale={1.5}
         onPointerEnter={() => setHovered(true)}
         onPointerLeave={() => setHovered(false)}
-        onClick={onSelect}
+        onPointerMissed={() => setSelectedPiece("")}
+        onClick={() => onSelect(char)}
       >
         <boxGeometry />
         <meshLambertMaterial color={"#ffffff"} opacity={0} transparent />

@@ -27,22 +27,31 @@ const Piece = ({
     turn === "w" && color !== "black" && setSelectedPiece(char);
 
   return (
-    <Clone
-      object={scene}
-      castShadow
-      receiveShadow
-      position={position}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
-      onClick={onSelect}
-      inject={
-        <Edges
-          scale={1}
-          threshold={200} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
-          color="black"
-        />
-      }
-    />
+    <group>
+      <mesh
+        position={[position[0], 1, position[2]]}
+        scale={1.5}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+        onClick={onSelect}
+      >
+        <boxGeometry />
+        <meshLambertMaterial color={"#ffffff"} opacity={0} transparent />
+      </mesh>
+      <Clone
+        object={scene}
+        castShadow
+        receiveShadow
+        position={position}
+        inject={
+          <Edges
+            scale={1}
+            threshold={200} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
+            color="black"
+          />
+        }
+      />
+    </group>
   );
 };
 

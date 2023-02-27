@@ -11,18 +11,21 @@ import { Suspense, useState } from "react";
 import Chessboard from "./Chessboard";
 // import Loader from "./Loader";
 import Piece from "./Piece";
-import { calculatePiecePositions } from "./utils";
+import { calculatePiecePositions, charToPosition } from "./utils";
 import { Chess } from "chess.js";
+import Point from "./Point";
 
 // const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+const chess = new Chess();
 
 const App = () => {
-  const [turn, setTurn] = useState("w");
   const [selectedPiece, setSelectedPiece] = useState("");
-  const chess = new Chess();
-  let piecePositionsMap = calculatePiecePositions(chess.fen());
 
-  console.log(chess.moves({ square: selectedPiece }));
+  const piecePositionsMap = calculatePiecePositions(chess.fen());
+  const moves =
+    selectedPiece !== "" ? chess.moves({ square: selectedPiece }) : [];
+
+  console.log(chess.ascii());
 
   return (
     <>
@@ -40,8 +43,19 @@ const App = () => {
                 char={char}
                 piece={piece}
                 position={position}
-                turn={turn}
+                turn={chess.turn()}
                 setSelectedPiece={setSelectedPiece}
+              />
+            ))}
+            {moves.map((move) => (
+              <Point
+                key={move}
+                char={move}
+                position={charToPosition(move)}
+                onSelected={(to) => {
+                  chess.move({ from: selectedPiece, to });
+                  setSelectedPiece("");
+                }}
               />
             ))}
             <Chessboard />

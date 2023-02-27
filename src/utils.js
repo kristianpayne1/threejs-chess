@@ -43,7 +43,8 @@ export const getType = (char) => {
 
 export const positionToChar = (column, row) =>
   String.fromCharCode(97 + (column + 8) / 2) + (-row + 9) / 2;
-export const charToPosition = (char) => [
-  2 * (char.charCodeAt(0) - 97) - 7,
-  -(2 * char[1] - 9),
-];
+export const charToPosition = (char) => {
+  if (char.includes("N")) char = char.split("N")[1];
+
+  return [2 * (char.charCodeAt(0) - 97) - 7, -(2 * char[1] - 9)];
+};

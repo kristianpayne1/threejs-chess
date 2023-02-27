@@ -1,22 +1,32 @@
-import { Loader } from "@react-three/drei";
 import {
   GizmoHelper,
   GizmoViewport,
   OrbitControls,
   OrthographicCamera,
   Stage,
-} from "@react-three/drei/core";
+  Loader,
+} from "@react-three/drei/";
 import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Chessboard from "./Chessboard";
 // import Loader from "./Loader";
 import Piece from "./Piece";
-import { calculatePiecePositions } from "./utils";
+import { calculatePiecePositions, charToPosition } from "./utils";
+import { Chess } from "chess.js";
+import Point from "./Point";
 
-const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+// const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+const chess = new Chess();
 
 const App = () => {
-  const piecePositionsMap = calculatePiecePositions(FEN);
+  const [selectedPiece, setSelectedPiece] = useState("");
+
+  const piecePositionsMap = calculatePiecePositions(chess.fen());
+  const moves =
+    selectedPiece !== "" ? chess.moves({ square: selectedPiece }) : [];
+
+  console.log(chess.ascii());
+
   return (
     <>
       <Canvas shadows dpr={[1, 2]}>
@@ -27,11 +37,25 @@ const App = () => {
             environment="city"
             adjustCamera={1.1}
           >
-            {piecePositionsMap.map(([piece, ...position], index) => (
+            {piecePositionsMap.map(([piece, char, ...position], index) => (
               <Piece
                 key={`${piece}-${index}`}
+                char={char}
                 piece={piece}
                 position={position}
+                turn={chess.turn()}
+                setSelectedPiece={setSelectedPiece}
+              />
+            ))}
+            {moves.map((move) => (
+              <Point
+                key={move}
+                char={move}
+                position={charToPosition(move)}
+                onSelected={(to) => {
+                  chess.move({ from: selectedPiece, to });
+                  setSelectedPiece("");
+                }}
               />
             ))}
             <Chessboard />

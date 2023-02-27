@@ -5,5 +5,11 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   base: "/threejs-chess/",
   plugins: [react()],
+  root: "./",
+  build: {
+    chunkSizeWarningLimit: 3000,
+    emptyOutDir: true,
+    sourcemap: true,
+  },
   assetsInclude: ["**/*.glb"],
 });

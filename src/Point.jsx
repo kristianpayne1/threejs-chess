@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { getBBox } from "./utils";
 
-const Point = ({ position = [0, 0.5, 0], char, onSelected }) => {
+const Point = ({ position = [0, 0.5, 0], onSelected, captured = "" }) => {
   const [hovered, setHovered] = useState(false);
+  const height = getBBox(captured);
 
   useEffect(() => {
     if (hovered) document.body.style.cursor = "pointer";
@@ -9,20 +11,26 @@ const Point = ({ position = [0, 0.5, 0], char, onSelected }) => {
   }, [hovered]);
 
   return (
-    <group position={[position[0], 1, position[1]]}>
+    <group position={[position[0], height / 2 + 0.4, position[1]]}>
       <mesh
-        scale={1.5}
+        scale={[1.5, height, 1.5]}
         onPointerEnter={() => setHovered(true)}
         onPointerLeave={() => setHovered(false)}
-        onClick={() => onSelected(char)}
+        onClick={onSelected}
       >
         <boxGeometry />
-        <meshLambertMaterial color={"#ff0000"} opacity={0} transparent />
+        <meshLambertMaterial
+          color={"#00ff00"}
+          opacity={!captured ? 0 : 0.5}
+          transparent
+        />
       </mesh>
-      <mesh scale={0.25}>
-        <sphereGeometry />
-        <meshLambertMaterial />
-      </mesh>
+      {!captured && (
+        <mesh scale={0.25}>
+          <sphereGeometry />
+          <meshLambertMaterial />
+        </mesh>
+      )}
     </group>
   );
 };

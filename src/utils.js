@@ -44,7 +44,24 @@ export const getType = (char) => {
 export const positionToChar = (column, row) =>
   String.fromCharCode(97 + (column + 8) / 2) + (-row + 9) / 2;
 export const charToPosition = (char) => {
-  if (char.includes("N")) char = char.split("N")[1];
-
   return [2 * (char.charCodeAt(0) - 97) - 7, -(2 * char[1] - 9)];
+};
+// temporary whiel I figure out how to size box automatically
+export const getBBox = (piece) => {
+  switch (piece.toLowerCase()) {
+    case "p":
+      return 2.5;
+    case "r":
+      return 2.75;
+    case "n":
+      return 3.25;
+    case "b":
+      return 3.4;
+    case "q":
+      return 3.75;
+    case "k":
+      return 4.25;
+    default:
+      return 1.5;
+  }
 };

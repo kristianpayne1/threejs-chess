@@ -7,7 +7,7 @@ import {
   Loader,
 } from "@react-three/drei/";
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Chessboard from "./Chessboard";
 // import Loader from "./Loader";
 import Piece from "./Piece";
@@ -20,12 +20,26 @@ const chess = new Chess();
 
 const App = () => {
   const [selectedPiece, setSelectedPiece] = useState("");
+  const [piecePositions, setPiecePositions] = useState([]);
 
-  const piecePositionsMap = calculatePiecePositions(chess.fen());
   const moves =
-    selectedPiece !== "" ? chess.moves({ square: selectedPiece }) : [];
+    selectedPiece !== ""
+      ? chess.moves({ square: selectedPiece, verbose: true })
+      : [];
 
-  console.log(chess.ascii());
+  console.log(moves);
+
+  useEffect(() => {
+    if (chess.isGameOver()) console.log("GAME OVER");
+    else if (chess.turn() === "b") {
+      const moves = chess.moves();
+      const move = moves[Math.floor(Math.random() * moves.length)];
+      chess.move(move);
+      setPiecePositions(calculatePiecePositions(chess.fen()));
+    } else {
+      setPiecePositions(calculatePiecePositions(chess.fen()));
+    }
+  }, [chess.turn()]);
 
   return (
     <>
@@ -37,7 +51,7 @@ const App = () => {
             environment="city"
             adjustCamera={1.1}
           >
-            {piecePositionsMap.map(([piece, char, ...position], index) => (
+            {piecePositions.map(([piece, char, ...position], index) => (
               <Piece
                 key={`${piece}-${index}`}
                 char={char}
@@ -49,11 +63,12 @@ const App = () => {
             ))}
             {moves.map((move) => (
               <Point
-                key={move}
-                char={move}
-                position={charToPosition(move)}
-                onSelected={(to) => {
-                  chess.move({ from: selectedPiece, to });
+                key={move.to}
+                piece={move.piece}
+                position={charToPosition(move.to)}
+                captured={move.captured}
+                onSelected={() => {
+                  chess.move({ from: move.from, to: move.to });
                   setSelectedPiece("");
                 }}
               />

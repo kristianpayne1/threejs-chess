@@ -1,6 +1,17 @@
-import { Modal, Box, Typography } from "@mui/material";
-import { Center, Text3D } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import {
+  Modal,
+  Box,
+  Typography,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Tooltip,
+  IconButton,
+} from "@mui/material";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import React from "react";
 
 const style = {
@@ -20,31 +31,53 @@ const style = {
   },
 };
 
-const Menu = () => {
+const Menu = ({ startGame = () => {} }) => {
   return (
     <Modal open={true} hideBackdrop>
-      <Box sx={style}>
-        <Canvas>
-          <Center>
-            <Text3D
-              font="./Roboto_Bold.json"
-              size={1.5}
-              height={0.2}
-              curveSegments={12}
-              bevelEnabled
-              bevelThickness={0.02}
-              bevelSize={0.02}
-              bevelOffset={0}
-              bevelSegments={5}
-            >
-              Chess
-              <meshNormalMaterial />
-            </Text3D>
-          </Center>
-        </Canvas>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+      <Box display="flex" flexDirection="column" rowGap="25px" sx={style}>
+        <Typography textAlign="center" variant="h6" component="h2">
+          ThreeJS - Chess
         </Typography>
+        <Box display="flex" flexDirection="column" rowGap="10px">
+          <FormControl disabled size="small" variant="standard" fullWidth>
+            <InputLabel>Difficulty</InputLabel>
+            <Tooltip
+              title="Locked - AI makes random moves"
+              arrow
+              placement="top"
+            >
+              <Select value={"Easy"} label="Difficulty" onChange={() => {}}>
+                <MenuItem value={"Easy"}>Easy</MenuItem>
+              </Select>
+            </Tooltip>
+          </FormControl>
+          <Button
+            size="large"
+            fullWidth
+            variant="contained"
+            startIcon={<PlayArrowIcon />}
+            onClick={startGame}
+          >
+            Play
+          </Button>
+          <Button
+            fullWidth
+            size="small"
+            target="_blank"
+            href="https://en.wikipedia.org/wiki/Rules_of_chess"
+          >
+            How to play
+          </Button>
+        </Box>
+        <Tooltip title="Check out my Github" arrow placement="top">
+          <IconButton
+            sx={{ width: "fit-content", margin: "auto" }}
+            target="_blank"
+            href="https://github.com/kristianpayne1"
+          >
+            <GitHubIcon></GitHubIcon>
+          </IconButton>
+        </Tooltip>
       </Box>
     </Modal>
   );

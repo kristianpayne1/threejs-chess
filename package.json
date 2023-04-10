@@ -10,6 +10,9 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/material": "^5.11.16",
     "@react-three/drei": "^9.51.24",
     "@react-three/fiber": "^8.10.0",
     "@react-three/postprocessing": "^2.7.0",

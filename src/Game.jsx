@@ -14,11 +14,12 @@ import Piece from "./Piece";
 import { calculatePiecePositions, charToPosition } from "./utils";
 import { Chess } from "chess.js";
 import Point from "./Point";
+import HUD from "./HUD";
 
-// const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-const chess = new Chess();
+const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+const chess = new Chess(window.localStorage.getItem("fen") || FEN);
 
-const Game = ({}) => {
+const Game = ({ setIsPlaying = () => {} }) => {
   const [selectedPiece, setSelectedPiece] = useState("");
   const [piecePositions, setPiecePositions] = useState([]);
 
@@ -27,7 +28,17 @@ const Game = ({}) => {
       ? chess.moves({ square: selectedPiece, verbose: true })
       : [];
 
-  console.log(moves);
+  const stopGame = () => {
+    chess.load(FEN);
+    window.localStorage.removeItem("fen");
+    setIsPlaying(false);
+  };
+
+  const restartGame = () => {
+    chess.load(FEN);
+    window.localStorage.setItem("fen", chess.fen());
+    setPiecePositions(calculatePiecePositions(chess.fen()));
+  };
 
   useEffect(() => {
     if (chess.isGameOver()) console.log("GAME OVER");
@@ -35,6 +46,7 @@ const Game = ({}) => {
       const moves = chess.moves();
       const move = moves[Math.floor(Math.random() * moves.length)];
       chess.move(move);
+      window.localStorage.setItem("fen", chess.fen());
       setPiecePositions(calculatePiecePositions(chess.fen()));
     } else {
       setPiecePositions(calculatePiecePositions(chess.fen()));
@@ -87,6 +99,7 @@ const Game = ({}) => {
         />
       </Canvas>
       <Loader containerStyles={{ background: "#004474" }} />
+      <HUD restartGame={restartGame} stopGame={stopGame} />
     </>
   );
 };

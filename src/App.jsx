@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Game from "./Game";
 import Menu from "./Menu";
+import MainMenu from "./MainMenu";
 
 const App = () => {
   const [isPlaying, setIsPlaying] = useState();
@@ -12,7 +13,9 @@ const App = () => {
   return isPlaying ? (
     <Game setIsPlaying={setIsPlaying} />
   ) : (
-    <Menu startGame={() => setIsPlaying(true)} />
+    <Menu>
+      <MainMenu startGame={() => setIsPlaying(true)} />
+    </Menu>
   );
 };
 

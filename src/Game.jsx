@@ -15,6 +15,8 @@ import { calculatePiecePositions, charToPosition } from "./utils";
 import { Chess } from "chess.js";
 import Point from "./Point";
 import HUD from "./HUD";
+import Menu from "./Menu";
+import GameOverMenu from "./GameOverMenu";
 
 const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 const chess = new Chess(window.sessionStorage.getItem("fen") || FEN);
@@ -22,6 +24,7 @@ const chess = new Chess(window.sessionStorage.getItem("fen") || FEN);
 const Game = ({ setIsPlaying = () => {} }) => {
   const [selectedPiece, setSelectedPiece] = useState("");
   const [piecePositions, setPiecePositions] = useState([]);
+  const [gameOver, setGameOver] = useState("");
 
   const moves =
     selectedPiece !== ""
@@ -35,14 +38,22 @@ const Game = ({ setIsPlaying = () => {} }) => {
   };
 
   const restartGame = () => {
+    if (gameOver) setGameOver(false);
     chess.load(FEN);
     window.sessionStorage.setItem("fen", chess.fen());
     setPiecePositions(calculatePiecePositions(chess.fen()));
   };
 
   useEffect(() => {
-    if (chess.isGameOver()) console.log("GAME OVER");
-    else if (chess.turn() === "b") {
+    if (chess.isGameOver()) {
+      if (chess.isCheckmate()) setGameOver("Check mate!");
+      else if (chess.isStalemate()) setGameOver("Stalemate!");
+      else if (chess.isDraw()) setGameOver("Draw!");
+      else if (chess.isThreefoldRepetition())
+        setGameOver("Threefold repetition!?");
+      else if (chess.isInsufficientMaterial())
+        setGameOver("Insufficient Material!");
+    } else if (chess.turn() === "b") {
       const moves = chess.moves();
       const move = moves[Math.floor(Math.random() * moves.length)];
       chess.move(move);
@@ -100,6 +111,15 @@ const Game = ({ setIsPlaying = () => {} }) => {
       </Canvas>
       <Loader containerStyles={{ background: "#004474" }} />
       <HUD restartGame={restartGame} stopGame={stopGame} />
+      {gameOver && (
+        <Menu>
+          <GameOverMenu
+            reason={gameOver}
+            stopGame={stopGame}
+            restartGame={restartGame}
+          />
+        </Menu>
+      )}
     </>
   );
 };

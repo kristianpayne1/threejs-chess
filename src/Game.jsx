@@ -52,7 +52,7 @@ const Game = ({ setIsPlaying = () => {} }) => {
       else if (chess.isThreefoldRepetition())
         setGameOver("Threefold repetition!?");
       else if (chess.isInsufficientMaterial())
-        setGameOver("Insufficient Material!");
+        setGameOver("Insufficient Material!?");
     } else if (chess.turn() === "b") {
       const moves = chess.moves();
       const move = moves[Math.floor(Math.random() * moves.length)];

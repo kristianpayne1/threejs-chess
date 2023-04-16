@@ -17,7 +17,7 @@ import Point from "./Point";
 import HUD from "./HUD";
 
 const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-const chess = new Chess(window.localStorage.getItem("fen") || FEN);
+const chess = new Chess(window.sessionStorage.getItem("fen") || FEN);
 
 const Game = ({ setIsPlaying = () => {} }) => {
   const [selectedPiece, setSelectedPiece] = useState("");
@@ -30,13 +30,13 @@ const Game = ({ setIsPlaying = () => {} }) => {
 
   const stopGame = () => {
     chess.load(FEN);
-    window.localStorage.removeItem("fen");
+    window.sessionStorage.removeItem("fen");
     setIsPlaying(false);
   };
 
   const restartGame = () => {
     chess.load(FEN);
-    window.localStorage.setItem("fen", chess.fen());
+    window.sessionStorage.setItem("fen", chess.fen());
     setPiecePositions(calculatePiecePositions(chess.fen()));
   };
 
@@ -46,7 +46,7 @@ const Game = ({ setIsPlaying = () => {} }) => {
       const moves = chess.moves();
       const move = moves[Math.floor(Math.random() * moves.length)];
       chess.move(move);
-      window.localStorage.setItem("fen", chess.fen());
+      window.sessionStorage.setItem("fen", chess.fen());
       setPiecePositions(calculatePiecePositions(chess.fen()));
     } else {
       setPiecePositions(calculatePiecePositions(chess.fen()));

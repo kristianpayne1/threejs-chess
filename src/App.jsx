@@ -6,7 +6,7 @@ const App = () => {
   const [isPlaying, setIsPlaying] = useState();
 
   useEffect(() => {
-    if (window.localStorage.getItem("fen")) setIsPlaying(true);
+    if (window.sessionStorage.getItem("fen")) setIsPlaying(true);
   }, []);
 
   return isPlaying ? (

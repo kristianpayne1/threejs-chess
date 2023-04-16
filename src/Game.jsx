@@ -24,7 +24,7 @@ const chess = new Chess(window.sessionStorage.getItem("fen") || FEN);
 const Game = ({ setIsPlaying = () => {} }) => {
   const [selectedPiece, setSelectedPiece] = useState("");
   const [piecePositions, setPiecePositions] = useState([]);
-  const [gameOver, setGameOver] = useState("");
+  const [gameOver, setGameOver] = useState();
 
   const moves =
     selectedPiece !== ""
@@ -112,7 +112,7 @@ const Game = ({ setIsPlaying = () => {} }) => {
       <Loader containerStyles={{ background: "#004474" }} />
       <HUD restartGame={restartGame} stopGame={stopGame} />
       {gameOver && (
-        <Menu>
+        <Menu hideBackdrop={false}>
           <GameOverMenu
             reason={gameOver}
             stopGame={stopGame}

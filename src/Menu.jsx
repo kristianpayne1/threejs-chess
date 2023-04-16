@@ -18,9 +18,9 @@ const style = {
   },
 };
 
-const Menu = ({ children }) => {
+const Menu = ({ children, hideBackdrop = true }) => {
   return (
-    <Modal open={true} hideBackdrop>
+    <Modal open={true} hideBackdrop={hideBackdrop}>
       <Box display="flex" flexDirection="column" rowGap="25px" sx={style}>
         {children}
       </Box>

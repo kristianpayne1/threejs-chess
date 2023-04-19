@@ -98,8 +98,6 @@ const Game = ({ setIsPlaying = () => {} }) => {
     }
   }, [chess.turn()]);
 
-  console.log(moves);
-
   return (
     <>
       <Canvas shadows dpr={[1, 2]}>

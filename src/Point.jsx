@@ -28,9 +28,12 @@ const Point = ({
         scale={[1.5, height, 1.5]}
         onPointerEnter={() => setHovered(true)}
         onPointerLeave={() => setHovered(false)}
-        onPointerMissed={() =>
-          Object.keys(promotionSelect)[0] === to && setSelectedPiece("")
-        }
+        onPointerMissed={() => {
+          if (!promotionSelect || Object.keys(promotionSelect)[0] === to) {
+            setSelectedPiece("");
+            showPromotionSelect();
+          }
+        }}
         onClick={(e) => {
           e.stopPropagation();
           if (promotionList) showPromotionSelect({ [to]: promotionList });

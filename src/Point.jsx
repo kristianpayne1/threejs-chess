@@ -6,13 +6,15 @@ import { PromotionBoxStyle, PromotionPieceButton } from "./muiStyles";
 
 const Point = ({
   position = [0, 0.5, 0],
+  to,
   promotionList,
   captured = "",
+  promotionSelect,
+  showPromotionSelect = () => {},
   onSelected = () => {},
   setSelectedPiece = () => {},
 }) => {
   const [hovered, setHovered] = useState(false);
-  const [promotionSelect, showPromotionSelect] = useState(false);
   const height = getBBox(captured);
 
   useEffect(() => {
@@ -26,10 +28,12 @@ const Point = ({
         scale={[1.5, height, 1.5]}
         onPointerEnter={() => setHovered(true)}
         onPointerLeave={() => setHovered(false)}
-        onPointerMissed={() => setSelectedPiece("")}
+        onPointerMissed={() =>
+          Object.keys(promotionSelect)[0] === to && setSelectedPiece("")
+        }
         onClick={(e) => {
           e.stopPropagation();
-          if (promotionList) showPromotionSelect(true);
+          if (promotionList) showPromotionSelect({ [to]: promotionList });
           else onSelected();
         }}
       >
@@ -46,14 +50,17 @@ const Point = ({
           <meshLambertMaterial />
         </mesh>
       )}
-      {promotionSelect && (
+      {promotionSelect?.[to] && (
         <Html center>
           <Box sx={PromotionBoxStyle}>
-            {promotionList.map((piece) => (
+            {promotionSelect[to].map((piece) => (
               <Button
                 key={piece}
                 className="promotionPieceButton"
-                onClick={() => onSelected(piece)}
+                onClick={() => {
+                  onSelected(piece);
+                  showPromotionSelect();
+                }}
                 sx={PromotionPieceButton}
               >
                 {charToUnicode(piece)}

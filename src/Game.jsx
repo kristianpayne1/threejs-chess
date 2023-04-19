@@ -64,6 +64,7 @@ const getMoves = (selectedPiece) =>
 const Game = ({ setIsPlaying = () => {} }) => {
   const [selectedPiece, setSelectedPiece] = useState("");
   const [piecePositions, setPiecePositions] = useState([]);
+  const [promotionSelect, showPromotionSelect] = useState(false);
   const [gameOver, setGameOver] = useState();
 
   const moves = getMoves(selectedPiece);
@@ -97,6 +98,8 @@ const Game = ({ setIsPlaying = () => {} }) => {
     }
   }, [chess.turn()]);
 
+  console.log(moves);
+
   return (
     <>
       <Canvas shadows dpr={[1, 2]}>
@@ -120,10 +123,13 @@ const Game = ({ setIsPlaying = () => {} }) => {
             {moves.map((move) => (
               <Point
                 key={move.to}
+                to={move.to}
                 setSelectedPiece={setSelectedPiece}
                 position={charToPosition(move.to)}
                 promotionList={move.promotionList}
                 captured={move.captured}
+                promotionSelect={promotionSelect}
+                showPromotionSelect={showPromotionSelect}
                 onSelected={(promotion) => {
                   chess.move({ ...move, promotion });
                   setSelectedPiece("");

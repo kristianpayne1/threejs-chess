@@ -18,4 +18,5 @@ body {
 
 canvas {
   touch-action: none;
+  z-index: 1;
 }

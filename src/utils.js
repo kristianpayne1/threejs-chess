@@ -46,7 +46,7 @@ export const positionToChar = (column, row) =>
 export const charToPosition = (char) => {
   return [2 * (char.charCodeAt(0) - 97) - 7, -(2 * char[1] - 9)];
 };
-// temporary whiel I figure out how to size box automatically
+// temporary while I figure out how to size box automatically
 export const getBBox = (piece) => {
   switch (piece.toLowerCase()) {
     case "p":
@@ -63,5 +63,18 @@ export const getBBox = (piece) => {
       return 4.25;
     default:
       return 1.5;
+  }
+};
+
+export const charToUnicode = (char) => {
+  switch (char) {
+    case "q":
+      return "\u2655";
+    case "r":
+      return "\u2656";
+    case "b":
+      return "\u2657";
+    case "n":
+      return "\u2659";
   }
 };

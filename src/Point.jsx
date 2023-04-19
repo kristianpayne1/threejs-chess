@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { getBBox } from "./utils";
+import { charToUnicode, getBBox } from "./utils";
+import { Html } from "@react-three/drei";
+import { Box, Button } from "@mui/material";
+import { PromotionBoxStyle, PromotionPieceButton } from "./muiStyles";
 
-const Point = ({ position = [0, 0.5, 0], onSelected, captured = "" }) => {
+const Point = ({
+  position = [0, 0.5, 0],
+  promotionList,
+  captured = "",
+  onSelected = () => {},
+  setSelectedPiece = () => {},
+}) => {
   const [hovered, setHovered] = useState(false);
+  const [promotionSelect, showPromotionSelect] = useState(false);
   const height = getBBox(captured);
 
   useEffect(() => {
@@ -16,7 +26,12 @@ const Point = ({ position = [0, 0.5, 0], onSelected, captured = "" }) => {
         scale={[1.5, height, 1.5]}
         onPointerEnter={() => setHovered(true)}
         onPointerLeave={() => setHovered(false)}
-        onClick={onSelected}
+        onPointerMissed={() => setSelectedPiece("")}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (promotionList) showPromotionSelect(true);
+          else onSelected();
+        }}
       >
         <boxGeometry />
         <meshLambertMaterial
@@ -30,6 +45,22 @@ const Point = ({ position = [0, 0.5, 0], onSelected, captured = "" }) => {
           <sphereGeometry />
           <meshLambertMaterial />
         </mesh>
+      )}
+      {promotionSelect && (
+        <Html center>
+          <Box sx={PromotionBoxStyle}>
+            {promotionList.map((piece) => (
+              <Button
+                key={piece}
+                className="promotionPieceButton"
+                onClick={() => onSelected(piece)}
+                sx={PromotionPieceButton}
+              >
+                {charToUnicode(piece)}
+              </Button>
+            ))}
+          </Box>
+        </Html>
       )}
     </group>
   );

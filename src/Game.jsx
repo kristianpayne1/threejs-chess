@@ -21,25 +21,62 @@ import GameOverMenu from "./GameOverMenu";
 const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 const chess = new Chess(window.sessionStorage.getItem("fen") || FEN);
 
+const AIMove = ({ setPiecePositions }) => {
+  const moves = chess.moves();
+  const move = moves[Math.floor(Math.random() * moves.length)];
+  try {
+    chess.move(move);
+    window.sessionStorage.setItem("fen", chess.fen());
+    setPiecePositions(calculatePiecePositions(chess.fen()));
+  } catch (e) {
+    console.error(e);
+    AIMove();
+  }
+};
+
+const getMoves = (selectedPiece) =>
+  selectedPiece !== ""
+    ? chess
+        .moves({ square: selectedPiece, verbose: true })
+        .reduce((acc, move) => {
+          if (move.promotion) {
+            const promotionMoveIndex = acc.findIndex(
+              (m) => m.promotion && m.to === move.to
+            );
+            if (promotionMoveIndex >= 0) {
+              acc[promotionMoveIndex] = {
+                ...move,
+                promotionList: [
+                  ...acc[promotionMoveIndex].promotionList,
+                  move.promotion,
+                ],
+              };
+              return acc;
+            } else {
+              return [...acc, { ...move, promotionList: [move.promotion] }];
+            }
+          } else {
+            return [...acc, move];
+          }
+        }, [])
+    : [];
+
 const Game = ({ setIsPlaying = () => {} }) => {
   const [selectedPiece, setSelectedPiece] = useState("");
   const [piecePositions, setPiecePositions] = useState([]);
   const [gameOver, setGameOver] = useState();
 
-  const moves =
-    selectedPiece !== ""
-      ? chess.moves({ square: selectedPiece, verbose: true })
-      : [];
+  const moves = getMoves(selectedPiece);
 
   const stopGame = () => {
-    chess.load(FEN);
+    chess.reset();
     window.sessionStorage.removeItem("fen");
     setIsPlaying(false);
   };
 
   const restartGame = () => {
     if (gameOver) setGameOver(false);
-    chess.load(FEN);
+    chess.reset();
     window.sessionStorage.setItem("fen", chess.fen());
     setPiecePositions(calculatePiecePositions(chess.fen()));
   };
@@ -54,11 +91,7 @@ const Game = ({ setIsPlaying = () => {} }) => {
       else if (chess.isInsufficientMaterial())
         setGameOver("Insufficient Material!?");
     } else if (chess.turn() === "b") {
-      const moves = chess.moves();
-      const move = moves[Math.floor(Math.random() * moves.length)];
-      chess.move(move);
-      window.sessionStorage.setItem("fen", chess.fen());
-      setPiecePositions(calculatePiecePositions(chess.fen()));
+      AIMove({ setPiecePositions });
     } else {
       setPiecePositions(calculatePiecePositions(chess.fen()));
     }
@@ -87,11 +120,12 @@ const Game = ({ setIsPlaying = () => {} }) => {
             {moves.map((move) => (
               <Point
                 key={move.to}
-                piece={move.piece}
+                setSelectedPiece={setSelectedPiece}
                 position={charToPosition(move.to)}
+                promotionList={move.promotionList}
                 captured={move.captured}
-                onSelected={() => {
-                  chess.move({ from: move.from, to: move.to });
+                onSelected={(promotion) => {
+                  chess.move({ ...move, promotion });
                   setSelectedPiece("");
                 }}
               />

@@ -30,7 +30,6 @@ const Piece = ({
           scale={1.5}
           onPointerEnter={() => setHovered(true)}
           onPointerLeave={() => setHovered(false)}
-          onPointerMissed={() => setSelectedPiece("")}
           onClick={() => onSelect(char)}
         >
           <boxGeometry />

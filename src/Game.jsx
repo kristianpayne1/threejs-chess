@@ -1,22 +1,24 @@
 import {
   GizmoHelper,
   GizmoViewport,
+  Loader,
   OrbitControls,
   OrthographicCamera,
   Stage,
-  Loader,
 } from "@react-three/drei/";
-import { Canvas } from "@react-three/fiber";
 import { Suspense, useEffect, useState } from "react";
-import Chessboard from "./Chessboard";
-// import Loader from "./Loader";
-import Piece from "./Piece";
 import { calculatePiecePositions, charToPosition } from "./utils";
+
+import { Canvas } from "@react-three/fiber";
 import { Chess } from "chess.js";
-import Point from "./Point";
+import Chessboard from "./Chessboard";
+import GameOverMenu from "./GameOverMenu";
 import HUD from "./HUD";
 import Menu from "./Menu";
-import GameOverMenu from "./GameOverMenu";
+import Piece from "./Piece";
+import Point from "./Point";
+
+// import Loader from "./Loader";
 
 const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 const chess = new Chess(window.sessionStorage.getItem("fen") || FEN);
@@ -102,12 +104,7 @@ const Game = ({ setIsPlaying = () => {} }) => {
     <>
       <Canvas shadows dpr={[1, 2]}>
         <Suspense fallback={null}>
-          <Stage
-            intensity={0.4}
-            shadows="accumulative"
-            environment="city"
-            adjustCamera={1.1}
-          >
+          <Stage intensity={0.4} adjustCamera={1.1}>
             {piecePositions.map(([piece, char, ...position], index) => (
               <Piece
                 key={`${piece}-${index}`}
